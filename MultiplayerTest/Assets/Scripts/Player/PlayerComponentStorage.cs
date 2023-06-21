@@ -1,26 +1,27 @@
+using System;
 using UnityEngine;
 
 public class PlayerComponentStorage : MonoBehaviour
 {
-    private PlayerInputs _playerInputs;
-
     //GETTERS && SETTERS//
-    public PlayerInputs PlayerInputs => _playerInputs;
+    public PlayerInputs PlayerInputs { get; private set; }
+    public PlayerMovement PlayerMovement { get; private set; }
 
-    /////////////////////////////////////////////////////
-    
+    ///////////////////////////////////////////////////
+
     private void Awake()
     {
-        _playerInputs = new PlayerInputs();
+        PlayerInputs = new PlayerInputs();
+        PlayerMovement = GetComponent<PlayerMovement>();
     }
 
     private void OnEnable()
     {
-        _playerInputs.Enable();
+        PlayerInputs.Enable();
     }
 
     private void OnDisable()
     {
-        _playerInputs.Disable();
+        PlayerInputs.Disable();
     }
 }

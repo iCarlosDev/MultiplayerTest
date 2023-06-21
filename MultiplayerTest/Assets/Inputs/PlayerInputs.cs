@@ -152,7 +152,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""name"": ""MouseHorizontal"",
                     ""type"": ""Value"",
                     ""id"": ""0e1d84d8-fd5e-4311-a013-d419604c338b"",
-                    ""expectedControlType"": ""Analog"",
+                    ""expectedControlType"": ""Axis"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
@@ -175,7 +175,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
                     ""id"": ""47b9e443-f381-43da-b9e2-0c39516f28f7"",
                     ""path"": ""<Mouse>/delta/y"",
                     ""interactions"": """",
-                    ""processors"": ""Clamp(min=-1,max=1)"",
+                    ""processors"": """",
                     ""groups"": """",
                     ""action"": ""MouseVertical"",
                     ""isComposite"": false,
