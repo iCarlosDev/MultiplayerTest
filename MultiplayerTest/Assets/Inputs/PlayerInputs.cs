@@ -140,10 +140,19 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             ""id"": ""971b1c57-02a3-4ff4-a135-786add60b174"",
             ""actions"": [
                 {
-                    ""name"": ""MouseMovement"",
+                    ""name"": ""MouseVertical"",
                     ""type"": ""Value"",
                     ""id"": ""35063eed-a8be-447c-ba2c-52dab5b9cf8b"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""expectedControlType"": ""Axis"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""MouseHorizontal"",
+                    ""type"": ""Value"",
+                    ""id"": ""0e1d84d8-fd5e-4311-a013-d419604c338b"",
+                    ""expectedControlType"": ""Analog"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
@@ -151,37 +160,26 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
             ],
             ""bindings"": [
                 {
-                    ""name"": ""MousePosition"",
-                    ""id"": ""e9482c8b-db9f-4a37-a6ca-2b681048595f"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""MouseMovement"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""3102ddef-d081-4de8-934d-55f0e5330927"",
-                    ""path"": ""<Mouse>/delta/y"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""MouseMovement"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""764e4e45-b24c-417e-8b32-cfd15e081f57"",
+                    ""name"": """",
+                    ""id"": ""13700510-6c56-438c-9ef3-1bdca4fb1296"",
                     ""path"": ""<Mouse>/delta/x"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""MouseMovement"",
+                    ""action"": ""MouseHorizontal"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": true
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""47b9e443-f381-43da-b9e2-0c39516f28f7"",
+                    ""path"": ""<Mouse>/delta/y"",
+                    ""interactions"": """",
+                    ""processors"": ""Clamp(min=-1,max=1)"",
+                    ""groups"": """",
+                    ""action"": ""MouseVertical"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -201,7 +199,8 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         m_Movement_Sprint = m_Movement.FindAction("Sprint", throwIfNotFound: true);
         // Camera
         m_Camera = asset.FindActionMap("Camera", throwIfNotFound: true);
-        m_Camera_MouseMovement = m_Camera.FindAction("MouseMovement", throwIfNotFound: true);
+        m_Camera_MouseVertical = m_Camera.FindAction("MouseVertical", throwIfNotFound: true);
+        m_Camera_MouseHorizontal = m_Camera.FindAction("MouseHorizontal", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -325,12 +324,14 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
     // Camera
     private readonly InputActionMap m_Camera;
     private List<ICameraActions> m_CameraActionsCallbackInterfaces = new List<ICameraActions>();
-    private readonly InputAction m_Camera_MouseMovement;
+    private readonly InputAction m_Camera_MouseVertical;
+    private readonly InputAction m_Camera_MouseHorizontal;
     public struct CameraActions
     {
         private @PlayerInputs m_Wrapper;
         public CameraActions(@PlayerInputs wrapper) { m_Wrapper = wrapper; }
-        public InputAction @MouseMovement => m_Wrapper.m_Camera_MouseMovement;
+        public InputAction @MouseVertical => m_Wrapper.m_Camera_MouseVertical;
+        public InputAction @MouseHorizontal => m_Wrapper.m_Camera_MouseHorizontal;
         public InputActionMap Get() { return m_Wrapper.m_Camera; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -340,16 +341,22 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
         {
             if (instance == null || m_Wrapper.m_CameraActionsCallbackInterfaces.Contains(instance)) return;
             m_Wrapper.m_CameraActionsCallbackInterfaces.Add(instance);
-            @MouseMovement.started += instance.OnMouseMovement;
-            @MouseMovement.performed += instance.OnMouseMovement;
-            @MouseMovement.canceled += instance.OnMouseMovement;
+            @MouseVertical.started += instance.OnMouseVertical;
+            @MouseVertical.performed += instance.OnMouseVertical;
+            @MouseVertical.canceled += instance.OnMouseVertical;
+            @MouseHorizontal.started += instance.OnMouseHorizontal;
+            @MouseHorizontal.performed += instance.OnMouseHorizontal;
+            @MouseHorizontal.canceled += instance.OnMouseHorizontal;
         }
 
         private void UnregisterCallbacks(ICameraActions instance)
         {
-            @MouseMovement.started -= instance.OnMouseMovement;
-            @MouseMovement.performed -= instance.OnMouseMovement;
-            @MouseMovement.canceled -= instance.OnMouseMovement;
+            @MouseVertical.started -= instance.OnMouseVertical;
+            @MouseVertical.performed -= instance.OnMouseVertical;
+            @MouseVertical.canceled -= instance.OnMouseVertical;
+            @MouseHorizontal.started -= instance.OnMouseHorizontal;
+            @MouseHorizontal.performed -= instance.OnMouseHorizontal;
+            @MouseHorizontal.canceled -= instance.OnMouseHorizontal;
         }
 
         public void RemoveCallbacks(ICameraActions instance)
@@ -384,6 +391,7 @@ public partial class @PlayerInputs: IInputActionCollection2, IDisposable
     }
     public interface ICameraActions
     {
-        void OnMouseMovement(InputAction.CallbackContext context);
+        void OnMouseVertical(InputAction.CallbackContext context);
+        void OnMouseHorizontal(InputAction.CallbackContext context);
     }
 }
